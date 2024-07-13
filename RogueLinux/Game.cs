@@ -2,31 +2,37 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using Avalonia.Media.Imaging;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using MsBox.Avalonia;
 using Newtonsoft.Json;
+
 namespace RogueLinux;
 
-public class Game
+public class Game : ObservableObject
 {
-     public string Name { get; }
-     public string Version { get; }
-     public string ExecutableName { get; }
-     public string DownloadPath { get; }
-     public string FileName { get; }
-     public string ImgName { get; }
+    private readonly string _downloadPath;
+    private readonly string _executableName;
+    private readonly string _fileName;
 
 
-    public Game(string name, string version, string executableName, string downloadPath, string fileName, string imgName)
+    public Game(string name, string version, string executableName, string downloadPath, string fileName,
+        string imgName)
     {
         Name = name;
         Version = version;
-        ExecutableName = executableName;
-        DownloadPath = downloadPath;
-        FileName = fileName;
-        ImgName = imgName;
+        _executableName = executableName;
+        _downloadPath = downloadPath;
+        _fileName = fileName;
+        Img = ImageHelper.LoadFromResource(new Uri($"avares://{typeof(Program).Assembly.GetName().Name}/Assets/{imgName}"));
     }
+
+    public string Name { get; }
+    public string Version { get; }
+
+    public Bitmap? Img { get; }
 
     public static Game Deserialize(string json)
     {
@@ -40,8 +46,8 @@ public class Game
             Directory.CreateDirectory($"./Games/{Name}");
             Directory.CreateDirectory($"./Games/{Name}/{Version}");
             using var client = new HttpClient();
-            await using var s = await client.GetStreamAsync(DownloadPath);
-            await using var fs = new FileStream(FileName, FileMode.OpenOrCreate);
+            await using var s = await client.GetStreamAsync(_downloadPath);
+            await using var fs = new FileStream(_fileName, FileMode.OpenOrCreate);
             await s.CopyToAsync(fs);
         }
         else
@@ -54,22 +60,18 @@ public class Game
 
     public void Launch()
     {
-        Process.Start(Directory.GetCurrentDirectory() + $"/Games/{Name}/{Version}/" + ExecutableName);
+        Process.Start(Directory.GetCurrentDirectory() + $"/Games/{Name}/{Version}/" + _executableName);
     }
 
     public static List<Game> LoadAllGames()
     {
-        string[] files = 
+        var files =
             Directory.GetFiles("./json/", "*.json", SearchOption.AllDirectories);
-        
-        List<Game> games = new List<Game>();
 
-        foreach (var file in files)
-        {
-            games.Append(Deserialize(File.ReadAllText(file)));
-        }
+        var games = new List<Game>();
+
+        foreach (var file in files) games.Add(Deserialize(File.ReadAllText(file)));
 
         return games;
-
     }
 }

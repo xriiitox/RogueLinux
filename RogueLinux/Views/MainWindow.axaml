@@ -12,37 +12,46 @@
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
 
     <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
-    
-        <SplitView x:Name="SplitView"
-                   PanePlacement="Left"
-                   IsPaneOpen="True"
-                   DisplayMode="Inline"
-                   Background="Gray"
-                   OpenPaneLength="200">
-            <SplitView.Pane>
-                <ListBox x:Name="Games">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border CornerRadius="6">
-                                <Image/>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </SplitView.Pane>
-            <Grid>
-                <!-- other content -->
-                <TextBlock Text="Other Content"/>
-                <Button Click="PlayOrInstall"
-                        Background="Black"
-                        VerticalAlignment="Bottom"
-                        HorizontalAlignment="Right"
-                        Margin="20, 20" />
-            </Grid>
-        </SplitView>
+
+    <SplitView x:Name="SplitView"
+               PanePlacement="Left"
+               IsPaneOpen="True"
+               DisplayMode="Inline"
+               Background="Gray"
+               OpenPaneLength="230">
+        <SplitView.Pane>
+            <ItemsControl x:Name="Games" ItemsSource="{Binding Games}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Margin="10" CornerRadius="6">
+                            <Button.Content>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock />
+                                    <TextBlock Text="{Binding Version}" HorizontalAlignment="Right" />
+                                </StackPanel>
+                            </Button.Content>
+                            <Button.Background>
+                                <ImageBrush Stretch="UniformToFill" Source="{Binding Img}"/>
+                            </Button.Background>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </SplitView.Pane>
+        <Grid>
+            <!-- other content -->
+            <TextBlock Text="Other Content" />
+            <Button Click="PlayOrInstall"
+                    Background="Black"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right"
+                    Margin="20, 20" />
+        </Grid>
+    </SplitView>
 
 </Window>

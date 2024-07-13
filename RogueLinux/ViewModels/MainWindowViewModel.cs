@@ -1,11 +1,25 @@
-﻿namespace RogueLinux.ViewModels;
+﻿using System.Collections.ObjectModel;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
-public class MainWindowViewModel : ViewModelBase
+namespace RogueLinux.ViewModels;
+
+public class MainWindowViewModel : ObservableObject
 {
-#pragma warning disable CA1822 // Mark members as static
-    public string Greeting => "Welcome to Avalonia!";
-#pragma warning restore CA1822 // Mark members as static
+    private ObservableCollection<Game> _games = new(Game.LoadAllGames());
 
-    public static string Install => "Install";
-    public static string Play => "Play"; 
+    public MainWindowViewModel()
+    {
+        Games = new ObservableCollection<Game>(Game.LoadAllGames());
+    }
+
+    public static string ButtonText => "Install";
+
+    public ObservableCollection<Game> Games
+    {
+        get => _games;
+        set => SetProperty(ref _games, value);
+    }
+#pragma warning disable CA1822 // Mark members as static
+    // public string Greeting => "Welcome to Avalonia!";
+#pragma warning restore CA1822 // Mark members as static
 }
