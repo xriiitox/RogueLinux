@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="RogueLinux.App"
              xmlns:local="using:RogueLinux"
+             xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              RequestedThemeVariant="Dark">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -11,5 +12,6 @@
   
     <Application.Styles>
         <FluentTheme />
+        <dialogHostAvalonia:DialogHostStyles />
     </Application.Styles>
 </Application>

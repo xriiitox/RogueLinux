@@ -22,12 +22,14 @@
                    IsPaneOpen="True"
                    DisplayMode="Inline"
                    Background="Gray"
-                   OpenPaneLength="120">
+                   OpenPaneLength="200">
             <SplitView.Pane>
                 <ListBox x:Name="Games">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Image/>
+                            <Border CornerRadius="6">
+                                <Image/>
+                            </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -39,9 +41,7 @@
                         Background="Black"
                         VerticalAlignment="Bottom"
                         HorizontalAlignment="Right"
-                        Margin="20, 20">
-                    Play
-                </Button>
+                        Margin="20, 20" />
             </Grid>
         </SplitView>
 
