@@ -1,7 +1,7 @@
 {
   "Name": "Cataclysm: Dark Days Ahead",
   "Version": "0.G",
-  "ExecutableName": "cataclysm-launcher",
+  "ExecutableName": "cataclysmdda-0.F/cataclysm-launcher",
   "DownloadPath": "https://github.com/CleverRaven/Cataclysm-DDA/releases/download/0.G/cdda-linux-tiles-sounds-x64-2023-03-01-0054.tar.gz",
   "FileName": "cdda-linux-tiles-sounds-x64-2023-03-01-0054.tar.gz",
   "ImgName": "cdda.png"

@@ -1,9 +1,9 @@
-using System;
-using System.IO;
 using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Animation;
 using RogueLinux.ViewModels;
 
 namespace RogueLinux.Views;
@@ -11,7 +11,7 @@ namespace RogueLinux.Views;
 public partial class MainWindow : Window
 {
     MainWindowViewModel vm = new();
-    private Game selectedGame;
+    private Game _selectedGame;
     
     public MainWindow()
     {
@@ -20,12 +20,21 @@ public partial class MainWindow : Window
 
     private void Play_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        _selectedGame.Launch();
     }
 
-    private void Install_OnClick(object? sender, RoutedEventArgs e)
+    private async void Install_OnClick(object? sender, RoutedEventArgs e)
     {
-        selectedGame.DownloadGame();
+        var button = Grid.Children.FirstOrDefault(x => x is Button) as Button;
+        
+        button.Content = "Downloading...";
+        button.Click -= Install_OnClick;
+        button.Click -= Play_OnClick;
+        
+        await _selectedGame.DownloadGame();
+        
+        button.Content = "Play";
+        button.Click += Play_OnClick;
     }
 
     private void SidebarGame_OnClick(object? sender, RoutedEventArgs e)
@@ -34,23 +43,31 @@ public partial class MainWindow : Window
         var button = Grid.Children.FirstOrDefault(x => x is Button) as Button;
         var background = Grid.Background as ImageBrush;
         
-        selectedGame = (sender as Button).DataContext as Game; // i dont know man
+        _selectedGame = (sender as Button).DataContext as Game; // i dont know man
         
         // First: change text and function of button depending on if game is installed
-        if (Directory.Exists($"./Games/{selectedGame.Name}/{selectedGame.Version}"))
+        if (_selectedGame.IsInstalled())
         {
             button.Content = "Play";
+            button.Click -= Install_OnClick;
             button.Click += Play_OnClick;
         }
         else
         {
             button.Content = "Install";
+            button.Click -= Play_OnClick;
             button.Click += Install_OnClick;
         }
         
         // Next: game title and background
-        background.Source = selectedGame.Img;
-        nameBlock.Text = selectedGame.Name;
+        background.Source = _selectedGame.Img;
+        nameBlock.Text = _selectedGame.Name;
         
+    }
+
+    private async void SidebarGame_OnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        var animation = Resources["ListItemAnimation"] as Animation;
+        await animation.RunAsync(sender as Button);
     }
 }

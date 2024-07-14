@@ -1,7 +1,7 @@
 {
   "Name": "Brogue",
   "Version": "1.13",
-  "ExecutableName": "brogue",
+  "ExecutableName": "BrogueCE-linux/brogue",
   "DownloadPath": "https://github.com/tmewett/BrogueCE/releases/download/v1.13/BrogueCE-1.13-linux-x86_64.tar.gz",
   "FileName": "BrogueCE-1.13-linux-x86_64.tar.gz",
   "ImgName": "brogue.jpg"

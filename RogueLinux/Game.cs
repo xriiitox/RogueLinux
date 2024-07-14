@@ -37,17 +37,17 @@ public class Game : ObservableObject
 
     public Bitmap? Img { get; }
 
-    public static Game Deserialize(string json)
+    static Game Deserialize(string json)
     {
         return JsonConvert.DeserializeObject<Game>(json);
     }
 
-    public async void DownloadGame()
+    public async Task DownloadGame()
     {
-        if (!Directory.Exists($"./Games/{Name}/{Version}"))
+        if (!IsInstalled())
         {
             var box = MessageBoxManager.GetMessageBoxStandard("Installing Game...", $"Installing {Name} {Version}");
-            await box.ShowAsync();
+            var installBoxTask = box.ShowAsync();
             Directory.CreateDirectory($"./Games/{Name}/{Version}");
             using var client = new HttpClient();
             await using var s = await client.GetStreamAsync(_downloadPath);
@@ -56,15 +56,19 @@ public class Game : ObservableObject
 
             if (_fileName.Contains("tar.gz") || _fileName.Contains(".tgz"))
             {
-                var compressedSource = new FileStream($"./Games/{Name}/{Version}/{_fileName}" , FileMode.Open, FileAccess.Read);
-                await using MemoryStream memoryStream = new();
+                await using var compressedSource = new FileStream($"./Games/{Name}/{Version}/{_fileName}" , FileMode.Open, FileAccess.Read);
+                await using MemoryStream memoryStream = new MemoryStream();
                 await using (GZipStream gzipStream = 
                              new(compressedSource, CompressionMode.Decompress))
                 {
                     await gzipStream.CopyToAsync(memoryStream);
                 }
-                await TarFile.ExtractToDirectoryAsync($"./Games/{Name}/{Version}/{_fileName.Remove(_fileName.Length - 3)}", $"./Games/{Name}/{Version}/", true);
-                File.Delete($"./Games/{Name}/{Version}/{_fileName.Remove(_fileName.Length - 3)}");
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                await TarFile.ExtractToDirectoryAsync(
+                        memoryStream,
+                        $"./Games/{Name}/{Version}/",
+                        overwriteFiles: true
+                    );
                 File.Delete($"./Games/{Name}/{Version}/{_fileName}");
             } 
             else if (_fileName.Contains(".zip"))
@@ -74,6 +78,8 @@ public class Game : ObservableObject
                     ZipFile.ExtractToDirectory($"./Games/{Name}/{Version}/{_fileName}", $"./Games/{Name}/{Version}/", true);
                 });
             }
+            
+            await installBoxTask;
         }
         else
         {
@@ -98,5 +104,10 @@ public class Game : ObservableObject
         foreach (var file in files) games.Add(Deserialize(File.ReadAllText(file)));
 
         return games;
+    }
+
+    public bool IsInstalled()
+    {
+        return Directory.Exists($"./Games/{Name}/{Version}");
     }
 }

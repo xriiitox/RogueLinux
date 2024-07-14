@@ -14,9 +14,20 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
-
-    <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
-
+    
+    <Window.Resources>
+        <Animation x:Key="ListItemAnimation" Duration="0:0:1">
+            <KeyFrame Cue="0%">
+                <Setter Property="ScaleTransform.ScaleX" Value="0"/>
+                <Setter Property="ScaleTransform.ScaleY" Value="0"/>
+            </KeyFrame>
+            <KeyFrame Cue="100%">
+                <Setter Property="ScaleTransform.ScaleX" Value="5"/>
+                <Setter Property="ScaleTransform.ScaleY" Value="5"/>
+            </KeyFrame>
+        </Animation>
+    </Window.Resources>
+    
     <SplitView x:Name="SplitView"
                PanePlacement="Left"
                IsPaneOpen="True"
@@ -27,7 +38,7 @@
             <ItemsControl x:Name="Games" ItemsSource="{Binding Games}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button x:Name="SidebarGame" Click="SidebarGame_OnClick" Width="210" Margin="10" CornerRadius="6">
+                        <Button x:Name="SidebarGame" PointerEntered="SidebarGame_OnPointerEntered" Click="SidebarGame_OnClick" Width="210" Margin="10" CornerRadius="6">
                             <Button.Content>
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="{Binding Name}" />
@@ -50,7 +61,7 @@
                     HorizontalAlignment="Right"
                     Margin="20, 20" />
             <Grid.Background>
-                <ImageBrush Stretch="Uniform"/>
+                <ImageBrush Stretch="UniformToFill"/>
             </Grid.Background>
         </Grid>
     </SplitView>

@@ -12,8 +12,6 @@ public class MainWindowViewModel : ObservableObject
         Games = new ObservableCollection<Game>(Game.LoadAllGames());
     }
 
-    public static string ButtonText => "Install";
-
     public ObservableCollection<Game> Games
     {
         get => _games;
