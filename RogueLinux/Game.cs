@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Formats.Tar;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using MsBox.Avalonia;
@@ -43,12 +46,34 @@ public class Game : ObservableObject
     {
         if (!Directory.Exists($"./Games/{Name}/{Version}"))
         {
-            Directory.CreateDirectory($"./Games/{Name}");
+            var box = MessageBoxManager.GetMessageBoxStandard("Installing Game...", $"Installing {Name} {Version}");
+            await box.ShowAsync();
             Directory.CreateDirectory($"./Games/{Name}/{Version}");
             using var client = new HttpClient();
             await using var s = await client.GetStreamAsync(_downloadPath);
-            await using var fs = new FileStream(_fileName, FileMode.OpenOrCreate);
+            await using var fs = new FileStream($"./Games/{Name}/{Version}/{_fileName}", FileMode.OpenOrCreate);
             await s.CopyToAsync(fs);
+
+            if (_fileName.Contains("tar.gz") || _fileName.Contains(".tgz"))
+            {
+                var compressedSource = new FileStream($"./Games/{Name}/{Version}/{_fileName}" , FileMode.Open, FileAccess.Read);
+                await using MemoryStream memoryStream = new();
+                await using (GZipStream gzipStream = 
+                             new(compressedSource, CompressionMode.Decompress))
+                {
+                    await gzipStream.CopyToAsync(memoryStream);
+                }
+                await TarFile.ExtractToDirectoryAsync($"./Games/{Name}/{Version}/{_fileName.Remove(_fileName.Length - 3)}", $"./Games/{Name}/{Version}/", true);
+                File.Delete($"./Games/{Name}/{Version}/{_fileName.Remove(_fileName.Length - 3)}");
+                File.Delete($"./Games/{Name}/{Version}/{_fileName}");
+            } 
+            else if (_fileName.Contains(".zip"))
+            {
+                await Task.Run(() =>
+                {
+                    ZipFile.ExtractToDirectory($"./Games/{Name}/{Version}/{_fileName}", $"./Games/{Name}/{Version}/", true);
+                });
+            }
         }
         else
         {

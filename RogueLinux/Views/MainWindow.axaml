@@ -27,7 +27,7 @@
             <ItemsControl x:Name="Games" ItemsSource="{Binding Games}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Margin="10" CornerRadius="6">
+                        <Button x:Name="SidebarGame" Click="SidebarGame_OnClick" Width="210" Margin="10" CornerRadius="6">
                             <Button.Content>
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="{Binding Name}" />
@@ -43,14 +43,15 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </SplitView.Pane>
-        <Grid>
-            <!-- other content -->
-            <TextBlock Text="Other Content" />
-            <Button Click="PlayOrInstall"
-                    Background="Black"
+        <Grid x:Name="Grid">
+            <TextBlock FontFamily="Monospace" FontSize="42" Margin="50"/>
+            <Button Background="Black"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right"
                     Margin="20, 20" />
+            <Grid.Background>
+                <ImageBrush Stretch="Uniform"/>
+            </Grid.Background>
         </Grid>
     </SplitView>
 

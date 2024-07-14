@@ -19,7 +19,4 @@ public class MainWindowViewModel : ObservableObject
         get => _games;
         set => SetProperty(ref _games, value);
     }
-#pragma warning disable CA1822 // Mark members as static
-    // public string Greeting => "Welcome to Avalonia!";
-#pragma warning restore CA1822 // Mark members as static
 }
