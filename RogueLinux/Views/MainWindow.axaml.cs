@@ -1,17 +1,16 @@
 using System.Linq;
-using System.Net.Mime;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.Animation;
-using RogueLinux.ViewModels;
+using MsBox.Avalonia;
 
 namespace RogueLinux.Views;
 
+// TODO: for next commit(s)
+// uninstaller
+// write readme.md
+
 public partial class MainWindow : Window
 {
-    MainWindowViewModel vm = new();
     private Game _selectedGame;
     
     public MainWindow()
@@ -46,6 +45,10 @@ public partial class MainWindow : Window
         var descBlock = Grid.Children.FirstOrDefault(x => x is TextBlock && (x as TextBlock).FontSize == 18) as TextBlock;
         
         _selectedGame = (sender as Button).DataContext as Game; // i dont know man
+
+        button.Click -= NoGame_OnClick;
+        button.Click -= Install_OnClick;
+        button.Click -= Play_OnClick;
         
         // First: change text and function of button depending on if game is installed
         if (_selectedGame.IsInstalled())
@@ -67,5 +70,12 @@ public partial class MainWindow : Window
         descBlock.Text = _selectedGame.Description;
         
         
+    }
+
+    private async void NoGame_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var box = MessageBoxManager.GetMessageBoxStandard("No Game Selected!",
+            "Please select a game from the sidebar.");
+        await box.ShowAsync();
     }
 }

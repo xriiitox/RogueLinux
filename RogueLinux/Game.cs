@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Formats.Tar;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -19,10 +20,11 @@ public class Game : ObservableObject
     private readonly string _downloadPath;
     private readonly string _executableName;
     private readonly string _fileName;
+    private readonly string _workingDir;
 
 
     public Game(string name, string version, string executableName, string downloadPath, string fileName,
-        string imgName, string description)
+        string imgName, string description, string workingDir)
     {
         Name = name;
         Version = version;
@@ -30,6 +32,7 @@ public class Game : ObservableObject
         _downloadPath = downloadPath;
         _fileName = fileName;
         Description = description;
+        _workingDir = workingDir;
         Img = ImageHelper.LoadFromResource(new Uri($"avares://{typeof(Program).Assembly.GetName().Name}/Assets/{imgName}"));
     }
 
@@ -81,13 +84,17 @@ public class Game : ObservableObject
             }
             else
             {
+                #pragma warning disable CA1416 // Will not work on windows
                         File.SetUnixFileMode($"./Games/{Name}/{Version}/{_fileName}", 
                             UnixFileMode.UserExecute |
                             UnixFileMode.GroupExecute |
                             UnixFileMode.OtherExecute |
                             UnixFileMode.UserRead | 
                             UnixFileMode.GroupRead |
-                            UnixFileMode.OtherRead);
+                            UnixFileMode.OtherRead | 
+                            UnixFileMode.UserWrite |
+                            UnixFileMode.GroupWrite |
+                            UnixFileMode.OtherWrite);
             }
             
             await installBoxTask;
@@ -102,7 +109,20 @@ public class Game : ObservableObject
 
     public void Launch()
     {
-        Process.Start(Directory.GetCurrentDirectory() + $"/Games/{Name}/{Version}/" + _executableName);
+        if (_fileName.Contains(".jar"))
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory($"./Games/{Name}/{Version}/{_workingDir}");
+            Process.Start("/usr/bin/env", "java -jar " + _executableName);
+            Directory.SetCurrentDirectory(currentDir);
+        }
+        else
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory($"./Games/{Name}/{Version}/{_workingDir}");
+            Process.Start(_executableName);
+            Directory.SetCurrentDirectory(currentDir);
+        }
     }
 
     public static List<Game> LoadAllGames()

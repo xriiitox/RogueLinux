@@ -37,6 +37,7 @@
                                 <Style Selector="Button:pointerover">
                                     <Setter Property="ZIndex" Value="1"/>
                                     <Setter Property="RenderTransform" Value="scale(1.05)"/>
+                                    <Setter Property="Background" Value="{Binding Img}"/>
                                 </Style>
                             </Button.Styles>
                             <Button.Background>
@@ -61,9 +62,21 @@
             <TextBlock FontFamily="Monospace" FontSize="42" Margin="50" Text="Select a game!"/>
             <TextBlock FontFamily="Monospace" FontSize="18" Margin="50, 200" TextWrapping="Wrap"/>
             <Button Background="Black"
+                    Click="NoGame_OnClick"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right"
-                    Margin="20, 20" Content="No Game Selected" />
+                    Margin="50, 20" 
+                    Content="No Game Selected">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="ZIndex" Value="1"/>
+                        <Setter Property="RenderTransform" Value="scale(1.575)"/>
+                    </Style>
+                    <Style Selector="Button">
+                        <Setter Property="RenderTransform" Value="scale(1.5)"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
         </Grid>
     </SplitView>
 
