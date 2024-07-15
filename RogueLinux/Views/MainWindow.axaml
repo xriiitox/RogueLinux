@@ -15,19 +15,6 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
     
-    <Window.Resources>
-        <Animation x:Key="ListItemAnimation" Duration="0:0:1">
-            <KeyFrame Cue="0%">
-                <Setter Property="ScaleTransform.ScaleX" Value="0"/>
-                <Setter Property="ScaleTransform.ScaleY" Value="0"/>
-            </KeyFrame>
-            <KeyFrame Cue="100%">
-                <Setter Property="ScaleTransform.ScaleX" Value="5"/>
-                <Setter Property="ScaleTransform.ScaleY" Value="5"/>
-            </KeyFrame>
-        </Animation>
-    </Window.Resources>
-    
     <SplitView x:Name="SplitView"
                PanePlacement="Left"
                IsPaneOpen="True"
@@ -38,7 +25,7 @@
             <ItemsControl x:Name="Games" ItemsSource="{Binding Games}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button x:Name="SidebarGame" PointerEntered="SidebarGame_OnPointerEntered" Click="SidebarGame_OnClick" Width="210" Margin="10" CornerRadius="6">
+                        <Button x:Name="SidebarGame" Click="SidebarGame_OnClick" Width="210" Margin="10" CornerRadius="6">
                             <Button.Content>
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="{Binding Name}" />
@@ -46,23 +33,37 @@
                                     <TextBlock Text="{Binding Version}" HorizontalAlignment="Right" />
                                 </StackPanel>
                             </Button.Content>
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover">
+                                    <Setter Property="ZIndex" Value="1"/>
+                                    <Setter Property="RenderTransform" Value="scale(1.05)"/>
+                                </Style>
+                            </Button.Styles>
                             <Button.Background>
-                                <ImageBrush Stretch="UniformToFill" Source="{Binding Img}"/>
+                                <ImageBrush Source="{Binding Img}" Stretch="UniformToFill"/>
                             </Button.Background>
+                            <Button.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.05"/>
+                                </Transitions>
+                            </Button.Transitions>
                         </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </SplitView.Pane>
         <Grid x:Name="Grid">
-            <TextBlock FontFamily="Monospace" FontSize="42" Margin="50"/>
+            <Image Stretch="UniformToFill">
+                <Image.Effect>
+                    <BlurEffect Radius="20"/>
+                </Image.Effect>
+            </Image>
+            <TextBlock FontFamily="Monospace" FontSize="42" Margin="50" Text="Select a game!"/>
+            <TextBlock FontFamily="Monospace" FontSize="18" Margin="50, 200" TextWrapping="Wrap"/>
             <Button Background="Black"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right"
-                    Margin="20, 20" />
-            <Grid.Background>
-                <ImageBrush Stretch="UniformToFill"/>
-            </Grid.Background>
+                    Margin="20, 20" Content="No Game Selected" />
         </Grid>
     </SplitView>
 

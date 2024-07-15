@@ -22,20 +22,21 @@ public class Game : ObservableObject
 
 
     public Game(string name, string version, string executableName, string downloadPath, string fileName,
-        string imgName)
+        string imgName, string description)
     {
         Name = name;
         Version = version;
         _executableName = executableName;
         _downloadPath = downloadPath;
         _fileName = fileName;
+        Description = description;
         Img = ImageHelper.LoadFromResource(new Uri($"avares://{typeof(Program).Assembly.GetName().Name}/Assets/{imgName}"));
     }
 
     public string Name { get; }
     public string Version { get; }
-
     public Bitmap? Img { get; }
+    public string Description { get; }
 
     static Game Deserialize(string json)
     {
@@ -77,6 +78,16 @@ public class Game : ObservableObject
                 {
                     ZipFile.ExtractToDirectory($"./Games/{Name}/{Version}/{_fileName}", $"./Games/{Name}/{Version}/", true);
                 });
+            }
+            else
+            {
+                        File.SetUnixFileMode($"./Games/{Name}/{Version}/{_fileName}", 
+                            UnixFileMode.UserExecute |
+                            UnixFileMode.GroupExecute |
+                            UnixFileMode.OtherExecute |
+                            UnixFileMode.UserRead | 
+                            UnixFileMode.GroupRead |
+                            UnixFileMode.OtherRead);
             }
             
             await installBoxTask;

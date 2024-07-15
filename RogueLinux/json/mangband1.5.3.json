@@ -1,0 +1,9 @@
+{
+  "Name": "mangband",
+  "Version": "1.5.3",
+  "ExecutableName": "MAngbandClient-1.5.3-x86_64.AppImage",
+  "DownloadPath": "https://www.mangband.org/download/MAngbandClient-1.5.3-x86_64.AppImage",
+  "FileName": "MAngbandClient-1.5.3-x86_64.AppImage",
+  "ImgName": "mangband.jpg",
+  "Description": "MAngband is a free online multiplayer real-time roguelike game, derived from the single player game Angband.\n\nTo win the game you must build up a character, selected from any one of 10 races and 6 classes, to be powerful enough to defeat Morgoth, Lord of Darkness, who lives in the dungeon 5000 feet below the surface of the town. As you work towards this near-impossible goal, you will chart unexplored dungeon passageways, do battle with legendary creatures, and find lost artifacts. And of course throughout your journeys you will encounter many other adventurers -- whether they be friend or foe is up to you to decide!"
+}

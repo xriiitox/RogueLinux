@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net.Mime;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -41,7 +42,8 @@ public partial class MainWindow : Window
     {
         var nameBlock = Grid.Children.FirstOrDefault(x => x is TextBlock) as TextBlock;
         var button = Grid.Children.FirstOrDefault(x => x is Button) as Button;
-        var background = Grid.Background as ImageBrush;
+        var background = Grid.Children.First(x => x is Image) as Image;
+        var descBlock = Grid.Children.FirstOrDefault(x => x is TextBlock && (x as TextBlock).FontSize == 18) as TextBlock;
         
         _selectedGame = (sender as Button).DataContext as Game; // i dont know man
         
@@ -62,12 +64,8 @@ public partial class MainWindow : Window
         // Next: game title and background
         background.Source = _selectedGame.Img;
         nameBlock.Text = _selectedGame.Name;
+        descBlock.Text = _selectedGame.Description;
         
-    }
-
-    private async void SidebarGame_OnPointerEntered(object? sender, PointerEventArgs e)
-    {
-        var animation = Resources["ListItemAnimation"] as Animation;
-        await animation.RunAsync(sender as Button);
+        
     }
 }
