@@ -14,7 +14,7 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
-    
+
     <SplitView x:Name="SplitView"
                PanePlacement="Left"
                IsPaneOpen="True"
@@ -25,7 +25,8 @@
             <ItemsControl x:Name="Games" ItemsSource="{Binding Games}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button x:Name="SidebarGame" Click="SidebarGame_OnClick" Width="210" Margin="10" CornerRadius="6">
+                        <Button x:Name="SidebarGame" Click="SidebarGame_OnClick" Width="210" Margin="10"
+                                CornerRadius="6">
                             <Button.Content>
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="{Binding Name}" />
@@ -35,17 +36,17 @@
                             </Button.Content>
                             <Button.Styles>
                                 <Style Selector="Button:pointerover">
-                                    <Setter Property="ZIndex" Value="1"/>
-                                    <Setter Property="RenderTransform" Value="scale(1.05)"/>
-                                    <Setter Property="Background" Value="{Binding Img}"/>
+                                    <Setter Property="ZIndex" Value="1" />
+                                    <Setter Property="RenderTransform" Value="scale(1.05)" />
+                                    <Setter Property="Background" Value="{Binding Img}" />
                                 </Style>
                             </Button.Styles>
                             <Button.Background>
-                                <ImageBrush Source="{Binding Img}" Stretch="UniformToFill"/>
+                                <ImageBrush Source="{Binding Img}" Stretch="UniformToFill" />
                             </Button.Background>
                             <Button.Transitions>
                                 <Transitions>
-                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.05"/>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.05" />
                                 </Transitions>
                             </Button.Transitions>
                         </Button>
@@ -56,24 +57,40 @@
         <Grid x:Name="Grid">
             <Image Stretch="UniformToFill">
                 <Image.Effect>
-                    <BlurEffect Radius="20"/>
+                    <BlurEffect Radius="20" />
                 </Image.Effect>
             </Image>
-            <TextBlock FontFamily="Monospace" FontSize="42" Margin="50" Text="Select a game!"/>
-            <TextBlock FontFamily="Monospace" FontSize="18" Margin="50, 200" TextWrapping="Wrap"/>
+            <TextBlock FontFamily="Monospace" FontSize="42" Margin="50" Text="Select a game!" />
+            <TextBlock FontFamily="Monospace" FontSize="18" Margin="50, 200" TextWrapping="Wrap" />
             <Button Background="Black"
                     Click="NoGame_OnClick"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right"
-                    Margin="50, 20" 
+                    Margin="50, 20"
                     Content="No Game Selected">
                 <Button.Styles>
                     <Style Selector="Button:pointerover">
-                        <Setter Property="ZIndex" Value="1"/>
-                        <Setter Property="RenderTransform" Value="scale(1.575)"/>
+                        <Setter Property="ZIndex" Value="1" />
+                        <Setter Property="RenderTransform" Value="scale(1.575)" />
                     </Style>
                     <Style Selector="Button">
-                        <Setter Property="RenderTransform" Value="scale(1.5)"/>
+                        <Setter Property="RenderTransform" Value="scale(1.5)" />
+                    </Style>
+                </Button.Styles>
+            </Button>
+            <Button Background="Black"
+                    Click="NoGame_OnClick"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left"
+                    Margin="50, 20"
+                    Content="No Game Selected">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="ZIndex" Value="1" />
+                        <Setter Property="RenderTransform" Value="scale(1.575)" />
+                    </Style>
+                    <Style Selector="Button">
+                        <Setter Property="RenderTransform" Value="scale(1.5)" />
                     </Style>
                 </Button.Styles>
             </Button>
