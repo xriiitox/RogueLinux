@@ -12,11 +12,9 @@
         <Content Include="Games\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="json\**">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
         <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Include="Assets\json\**"/>
     </ItemGroup>
 
 

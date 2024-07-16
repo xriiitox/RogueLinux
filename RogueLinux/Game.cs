@@ -4,33 +4,51 @@ using System.Diagnostics;
 using System.Formats.Tar;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using MsBox.Avalonia;
 using Newtonsoft.Json;
 
 namespace RogueLinux;
 
-[method: JsonConstructor]
-public class Game(
-    string name,
-    string version,
-    string executableName,
-    string downloadPath,
-    string workingDir,
-    string fileName,
-    string imgName,
-    string description)
-    : ObservableObject
+public class Game : ObservableObject
 {
-    public string Name { get; } = name;
-    public string Version { get; } = version;
-    public Bitmap? Img { get; } = ImageHelper.LoadFromResource(
-        new Uri($"avares://{typeof(Program).Assembly.GetName().Name}/Assets/{imgName}"));
+    private readonly string _executableName;
+    private readonly string _downloadPath;
+    private readonly string _workingDir;
+    private readonly string _fileName;
+    public string Name { get; }
+    public string Version { get; }
+    public Bitmap? Img { get; }
+    
+    Game() { } // json crap
 
-    public string Description { get; } = description;
+    
+    public Game(string name,
+        string version,
+        string executableName,
+        string downloadPath,
+        string workingDir,
+        string fileName,
+        string imgName,
+        string description)
+    {
+        _executableName = executableName;
+        _downloadPath = downloadPath;
+        _workingDir = workingDir;
+        _fileName = fileName;
+        Name = name;
+        Version = version;
+        Img = new Bitmap(AssetLoader.Open(new Uri($"avares://{Assembly.GetExecutingAssembly().GetName().Name}/Assets/{imgName}")));
+        Description = description;
+    }
+
+    public string Description { get; }
 
     private static Game Deserialize(string json)
     {
@@ -45,13 +63,13 @@ public class Game(
             var installBoxTask = box.ShowAsync();
             Directory.CreateDirectory($"./Games/{Name}/{Version}");
             using var client = new HttpClient();
-            await using var s = await client.GetStreamAsync(downloadPath);
-            await using var fs = new FileStream($"./Games/{Name}/{Version}/{fileName}", FileMode.OpenOrCreate);
+            await using var s = await client.GetStreamAsync(_downloadPath);
+            await using var fs = new FileStream($"./Games/{Name}/{Version}/{_fileName}", FileMode.OpenOrCreate);
             await s.CopyToAsync(fs);
 
-            if (fileName.Contains("tar.gz") || fileName.Contains(".tgz"))
+            if (_fileName.Contains("tar.gz") || _fileName.Contains(".tgz"))
             {
-                await using var compressedSource = new FileStream($"./Games/{Name}/{Version}/{fileName}",
+                await using var compressedSource = new FileStream($"./Games/{Name}/{Version}/{_fileName}",
                     FileMode.Open, FileAccess.Read);
                 await using var memoryStream = new MemoryStream();
                 await using (GZipStream gzipStream =
@@ -66,20 +84,20 @@ public class Game(
                     $"./Games/{Name}/{Version}/",
                     true
                 );
-                File.Delete($"./Games/{Name}/{Version}/{fileName}");
+                File.Delete($"./Games/{Name}/{Version}/{_fileName}");
             }
-            else if (fileName.Contains(".zip"))
+            else if (_fileName.Contains(".zip"))
             {
                 await Task.Run(() =>
                 {
-                    ZipFile.ExtractToDirectory($"./Games/{Name}/{Version}/{fileName}",
+                    ZipFile.ExtractToDirectory($"./Games/{Name}/{Version}/{_fileName}",
                         $"./Games/{Name}/{Version}/", true);
                 });
             }
             else
             {
 #pragma warning disable CA1416 // Will not work on windows
-                File.SetUnixFileMode($"./Games/{Name}/{Version}/{fileName}",
+                File.SetUnixFileMode($"./Games/{Name}/{Version}/{_fileName}",
                     UnixFileMode.UserExecute |
                     UnixFileMode.GroupExecute |
                     UnixFileMode.OtherExecute |
@@ -103,18 +121,18 @@ public class Game(
 
     public void Launch()
     {
-        if (fileName.Contains(".jar"))
+        if (_fileName.Contains(".jar"))
         {
             var currentDir = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory($"./Games/{Name}/{Version}/{workingDir}");
-            Process.Start("/usr/bin/env", "java -jar " + executableName);
+            Directory.SetCurrentDirectory($"./Games/{Name}/{Version}/{_workingDir}");
+            Process.Start("/usr/bin/env", "java -jar " + _executableName);
             Directory.SetCurrentDirectory(currentDir);
         }
         else
         {
             var currentDir = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory($"./Games/{Name}/{Version}/{workingDir}");
-            Process.Start(executableName);
+            Directory.SetCurrentDirectory($"./Games/{Name}/{Version}/{_workingDir}");
+            Process.Start(_executableName);
             Directory.SetCurrentDirectory(currentDir);
         }
     }
@@ -122,13 +140,9 @@ public class Game(
     public static List<Game> LoadAllGames()
     {
         var files =
-            Directory.GetFiles("./json/", "*.json", SearchOption.AllDirectories);
+            Directory.GetFiles($"avares://{Assembly.GetExecutingAssembly().GetName().Name}/Assets/json/", "*.json", SearchOption.AllDirectories);
 
-        var games = new List<Game>();
-
-        foreach (var file in files) games.Add(Deserialize(File.ReadAllText(file)));
-
-        return games;
+        return files.Select(file => Deserialize(File.ReadAllText(file))).ToList();
     }
 
     public bool IsInstalled()

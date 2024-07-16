@@ -1,7 +1,11 @@
+using System;
 using System.Linq;
+using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 
