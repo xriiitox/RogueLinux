@@ -26,7 +26,7 @@ public class Game : ObservableObject
     public string Version { get; }
     public Bitmap? Img { get; }
     
-    Game() { } // json crap
+    Game() { } // json crap needs this for some reason
 
     
     public Game(string name,
@@ -139,10 +139,16 @@ public class Game : ObservableObject
 
     public static List<Game> LoadAllGames()
     {
-        var files =
-            Directory.GetFiles($"avares://{Assembly.GetExecutingAssembly().GetName().Name}/Assets/json/", "*.json", SearchOption.AllDirectories);
+        List<string> files = [];
 
-        return files.Select(file => Deserialize(File.ReadAllText(file))).ToList();
+        foreach (var file in AssetLoader.GetAssets(new Uri("avares://RogueLinux/Assets/json/"), null))
+        {
+            using StreamReader reader = new StreamReader(AssetLoader.Open(file));
+            string json = reader.ReadToEnd();
+            files.Add(json);
+        }
+
+        return files.Select(Deserialize).ToList();
     }
 
     public bool IsInstalled()

@@ -13,14 +13,15 @@ A FOSS roguelike launcher for linux distros, made with C#, .NET, and AvaloniaUI!
 ## Usage
 
 Download from releases and run the executable.
-
-I might package this as an AppImage later for fun.
+ 
+Run in its own folder, as a separate "Games" folder will be made.
 
 ## Contribution
 
 Feel free to fork and make a PR!
 
-New games can be added by putting a json in the `RogueLinux/json` folder along with an image to go with it, in `RogueLinux/Assets`.
+New games can be added by putting a json in the `RogueLinux/Assets/json` folder along with an image to go with it, in `RogueLinux/Assets`.
+
 
 ## Libraries Used
 

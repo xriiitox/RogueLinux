@@ -13,7 +13,7 @@ namespace RogueLinux.Views;
 
 public partial class MainWindow : Window
 {
-    private Game _selectedGame;
+    private Game? _selectedGame;
 
     public MainWindow()
     {
